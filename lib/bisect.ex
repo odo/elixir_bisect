@@ -12,7 +12,7 @@ defmodule Bisect do
   end
 
   defp find(min_index, max_index, _, callback_module, state) when max_index < min_index do
-    {min_index, callback_module.value(min_index, state)}
+    scan_left(min_index, callback_module.value(min_index, state), callback_module, state)
   end
   defp find(same_index, same_index, _, callback_module, state) do
     {same_index, callback_module.value(same_index, state)}
@@ -38,6 +38,17 @@ defmodule Bisect do
     else
       _ -> {index, key}
     end
+  end
+
+  defp scan_left(index, key, callback_module, state) do
+    with next_index when next_index != index <- callback_module.previous_index(index, state),
+                                        ^key <- callback_module.value(next_index, state)
+    do
+       scan_left(next_index, key, callback_module, state)
+    else
+      _ -> {index, key}
+    end
+
   end
 
 end

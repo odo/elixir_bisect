@@ -30,4 +30,10 @@ defmodule BisectTest do
     assert {8, 3} == Bisect.find(4, @backend, list)
   end
 
+  test "find next from unknown with repeats" do
+    # index[0, 1, 2, 3]
+    list = [1, 1, 3, 3]
+    assert {2, 3} == Bisect.find(2, @backend, list)
+  end
+
 end
